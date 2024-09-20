@@ -7,12 +7,12 @@ const App: React.FC = () => {
   const [weightInGram, setWeightInGram] = useState<number>(0);
   const [sellingPrice, setSellingPrice] = useState<number | null>(null);
   const [wonToIDR, setWonToIDR] = useState<number>(11.8);
-  const [logisticFee, setLogisticFee] = useState<number>(160_000);
+  const [EMSRate, setEMSRate] = useState<number>(0);
   const [history, setHistory] = useState<number[]>([]);
 
   function calculateSellingPrice() {
     const basePrice = costPrice * wonToIDR;
-    const deliveryFee = (weightInGram / 1000) * logisticFee;
+    const deliveryFee = weightInGram * EMSRate;
 
     const sellingPrice = basePrice + deliveryFee + profitMargin;
     setSellingPrice(sellingPrice);
@@ -25,7 +25,7 @@ const App: React.FC = () => {
     setWeightInGram(0);
     setSellingPrice(null);
     setWonToIDR(11.8);
-    setLogisticFee(160_000);
+    setEMSRate(0);
   }
 
   return (
@@ -72,12 +72,12 @@ const App: React.FC = () => {
         </div>
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700">
-            Biaya pengiriman / 1000g (rupiah)
+            Rate EMS
           </label>
           <input
             type="number"
-            value={logisticFee}
-            onChange={(e) => setLogisticFee(parseFloat(e.target.value))}
+            value={EMSRate}
+            onChange={(e) => setEMSRate(parseFloat(e.target.value))}
             className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             placeholder="Masukkan biaya pengiriman (rupiah)"
           />
