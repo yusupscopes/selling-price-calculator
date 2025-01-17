@@ -8,7 +8,7 @@ const App: React.FC = () => {
   const [sellingPrice, setSellingPrice] = useState<number | null>(null);
   const [wonToIDR, setWonToIDR] = useState<number>(11.8);
   const [EMSRate, setEMSRate] = useState<number>(0);
-  const [history, setHistory] = useState<number[]>([]);
+  const [history, setHistory] = useState<{ sellingPrice: number; weight: number}[]>([]);
 
   function calculateSellingPrice() {
     const basePrice = costPrice * wonToIDR;
@@ -16,7 +16,7 @@ const App: React.FC = () => {
 
     const sellingPrice = basePrice + deliveryFee + profitMargin;
     setSellingPrice(sellingPrice);
-    setHistory([...history, sellingPrice]);
+    setHistory([...history, { sellingPrice, weight: weightInGram }]);
   }
 
   function resetState() {
@@ -123,7 +123,7 @@ const App: React.FC = () => {
             <ul>
               {history.map((item, index) => (
                 <li className="font-bold" key={index}>
-                  {IDRupiah.format(item)}
+                  {IDRupiah.format(item.sellingPrice)} ({item.weight} gram)
                 </li>
               ))}
             </ul>
