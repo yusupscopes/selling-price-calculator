@@ -2,13 +2,18 @@ import React, { useState } from "react";
 import { IDRupiah } from "./utils";
 
 const App: React.FC = () => {
+  const [productName, setProductName] = useState<string>("");
   const [costPrice, setCostPrice] = useState<number>(0);
   const [profitMargin, setProfitMargin] = useState<number>(0);
   const [weightInGram, setWeightInGram] = useState<number>(0);
   const [sellingPrice, setSellingPrice] = useState<number | null>(null);
   const [wonToIDR, setWonToIDR] = useState<number>(11.8);
   const [EMSRate, setEMSRate] = useState<number>(0);
-  const [history, setHistory] = useState<{ sellingPrice: number; weight: number}[]>([]);
+  const [history, setHistory] = useState<{
+    sellingPrice: number;
+    weight: number;
+    productName: string;
+  }[]>([]);
 
   function calculateSellingPrice() {
     const basePrice = costPrice * wonToIDR;
@@ -16,10 +21,14 @@ const App: React.FC = () => {
 
     const sellingPrice = basePrice + deliveryFee + profitMargin;
     setSellingPrice(sellingPrice);
-    setHistory([...history, { sellingPrice, weight: weightInGram }]);
+    setHistory([
+      ...history,
+      { sellingPrice, weight: weightInGram, productName },
+    ]);
   }
 
   function resetState() {
+    setProductName("");
     setCostPrice(0);
     setProfitMargin(0);
     setWeightInGram(0);
@@ -34,6 +43,18 @@ const App: React.FC = () => {
         <h1 className="text-2xl font-semibold text-center mb-6">
           Kalkulator Harga Jual (Dalkkumi)
         </h1>
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700">
+            Nama produk
+          </label>
+          <input
+            type="text"
+            value={productName}
+            onChange={(e) => setProductName(e.target.value)}
+            className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            placeholder="Masukkan nama produk"
+          />
+        </div>
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700">
             Harga barang (won)
@@ -121,11 +142,16 @@ const App: React.FC = () => {
           <div className="mt-4 text-center">
             <p className="text-lg">Riwayat:</p>
             <ul>
-              {history.map((item, index) => (
-                <li className="font-bold" key={index}>
-                  {IDRupiah.format(item.sellingPrice)} ({item.weight} gram)
-                </li>
-              ))}
+              {history.map((item, index) => {
+                const displayName = item.productName.trim() || "Item";
+
+                return (
+                  <li className="font-bold" key={index}>
+                    {displayName} {IDRupiah.format(item.sellingPrice)} est{" "}
+                    {item.weight}gr
+                  </li>
+                );
+              })}
             </ul>
           </div>
         )}
